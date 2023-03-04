@@ -1,33 +1,26 @@
 #include "binary_trees.h"
 
 /**
- * heap_to_sorted_array - converts a Binary Max Heap
- * to a sorted array of integers
- * @heap: a pointer to the root node of the heap to convert
- * @size: an address to store the size of the array
+ * binary_trees_ancestor - Finds the lowest common ancestor of two nodes.
+ * @first: Pointer to the first node.
+ * @second: Pointer to the second node.
  *
- * Return: the generated array
- *         NULL on failure
+ * Return: If no common ancestors return NULL, else return common ancestor.
  */
-int *heap_to_sorted_array(heap_t *heap, size_t *size)
+binary_tree_t *binary_trees_ancestor(const binary_tree_t *first,
+		const binary_tree_t *second)
 {
-	int *array;
-	int extract, i = 0;
-	size_t heap_size;
+	binary_tree_t *mom, *pop;
 
-	if (!heap)
+	if (!first || !second)
 		return (NULL);
-	heap_size = binary_tree_size(heap);
-	*size = heap_size;
-	array = malloc(heap_size * sizeof(int));
-	if (!array)
-		return (NULL);
-	while (heap)
-	{
-		extract = heap_extract(&heap);
-		array[i] = extract;
-		i++;
-	}
-	return (array);
+	if (first == second)
+		return ((binary_tree_t *)first);
 
+	mom = first->parent, pop = second->parent;
+	if (first == pop || !mom || (!mom->parent && pop))
+		return (binary_trees_ancestor(first, pop));
+	else if (mom == second || !pop || (!pop->parent && mom))
+		return (binary_trees_ancestor(mom, second));
+	return (binary_trees_ancestor(mom, pop));
 }
